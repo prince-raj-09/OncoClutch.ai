@@ -1,12 +1,11 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom"; // Remove BrowserRouter import
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import AI from "./pages/AI";
 import About from "./pages/About";
 import Footer from "./components/Footer";
-
-
+import Synapse from "./pages/Synapse";
 
 const App = () => {
   return (
@@ -16,10 +15,14 @@ const App = () => {
 
       {/* Page Routes */}
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/ai" element={<AI />} />
-        <Route path="/about" element={<About />} />
-      </Routes>
+  <Route path="/" element={<Home />} />
+  <Route path="/ai" element={<AI />} />
+  <Route path="/about" element={<About />} />
+  <Route path="/synapse" element={<Synapse />} />
+</Routes>
+
+
+      {/* Footer */}
       <Footer />
     </div>
   );

@@ -1,50 +1,58 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 const AI = () => {
-  const [textInput, setTextInput] = useState("");
-  const [image, setImage] = useState(null);
+  const [file, setFile] = useState(null);
+  const [prediction, setPrediction] = useState("");
+  const [confidence, setConfidence] = useState("");
 
-  const handleFileUpload = (e) => {
-    setImage(URL.createObjectURL(e.target.files[0]));
+  const handleFileChange = (event) => {
+    setFile(event.target.files[0]);
   };
 
-  const handlePredict = () => {
-    console.log("Processing AI Prediction...");
+  const handleUpload = async () => {
+    if (!file) {
+      alert("Please select an image first.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await fetch("http://localhost:8000/predict", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        setPrediction(data.prediction);
+        setConfidence((data.confidence * 100).toFixed(2) + "%");
+      } else {
+        alert(data.error);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Failed to get prediction");
+    }
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-6">
-      <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-md">
-        <h1 className="text-xl font-bold text-center mb-4">Cancer AI Detector</h1>
-        
-        {/* Text Input */}
-        <input
-          type="text"
-          placeholder="Describe your symptoms..."
-          value={textInput}
-          onChange={(e) => setTextInput(e.target.value)}
-          className="w-full p-2 border border-gray-300 rounded mb-4"
-        />
-
-        {/* Image Upload */}
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleFileUpload}
-          className="mb-4 w-full"
-        />
-        {image && <img src={image} alt="Uploaded" className="w-full h-32 object-cover mb-4" />}
-
-        {/* Predict Button */}
-        <button
-          onClick={handlePredict}
-          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-700"
-        >
-          Predict
-        </button>
-      </div>
+    <div className="text-center p-6">
+      <h1 className="text-2xl font-bold mb-4">AI Cancer Detection</h1>
+      <input type="file" onChange={handleFileChange} className="mb-4" />
+      <button onClick={handleUpload} className="bg-blue-500 text-white px-4 py-2 rounded">
+        Upload & Predict
+      </button>
+      {prediction && (
+        <div className="mt-4">
+          <h2 className="text-xl">Prediction: {prediction}</h2>
+          <p>Confidence: {confidence}</p>
+        </div>
+      )}
     </div>
   );
 };
 
 export default AI;
+  
