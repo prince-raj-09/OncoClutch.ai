@@ -22,10 +22,10 @@ const Navbar = () => {
           About
         </Link>
         <Link
-          to="/faqs"
+          to="/synapse"
           className="text-gray-300 hover:text-blue-400 transition"
         >
-          FAQs
+          Synapse
         </Link>
       </div>
     </nav>

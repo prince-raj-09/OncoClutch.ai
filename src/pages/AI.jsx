@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const AIPage = () => {
+const AI = () => {
   const [textInput, setTextInput] = useState("");
   const [image, setImage] = useState(null);
 
@@ -47,4 +47,4 @@ const AIPage = () => {
   );
 };
 
-export default AIPage;
+export default AI;

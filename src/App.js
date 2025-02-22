@@ -2,10 +2,10 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
-import Ai from "./pages/Ai";
+import AI from "./pages/AI";
 import About from "./pages/About";
-import Faqs from "./pages/Faqs";
 import Footer from "./components/Footer";
+
 
 
 const App = () => {
@@ -17,9 +17,8 @@ const App = () => {
       {/* Page Routes */}
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/ai" element={<Ai />} />
+        <Route path="/ai" element={<AI />} />
         <Route path="/about" element={<About />} />
-        <Route path="/faqs" element={<Faqs />} />
       </Routes>
       <Footer />
     </div>
