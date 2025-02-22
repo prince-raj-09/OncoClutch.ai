@@ -1,58 +1,62 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
-const AI = () => {
-  const [file, setFile] = useState(null);
-  const [prediction, setPrediction] = useState("");
-  const [confidence, setConfidence] = useState("");
+const Ai = () => {
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [preview, setPreview] = useState(null);
+    const [prediction, setPrediction] = useState("");
 
-  const handleFileChange = (event) => {
-    setFile(event.target.files[0]);
-  };
+    // Handle file selection
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            setSelectedFile(file);
+            setPreview(URL.createObjectURL(file)); // Show image preview
+        }
+    };
 
-  const handleUpload = async () => {
-    if (!file) {
-      alert("Please select an image first.");
-      return;
-    }
+    // Upload and get prediction
+    const handleUpload = async () => {
+        if (!selectedFile) {
+            alert("Please select an image first.");
+            return;
+        }
 
-    const formData = new FormData();
-    formData.append("file", file);
+        const formData = new FormData();
+        formData.append("file", selectedFile);
 
-    try {
-      const response = await fetch("http://localhost:8000/predict", {
-        method: "POST",
-        body: formData,
-      });
+        try {
+            const response = await fetch("http://127.0.0.1:5000/predict", {
+                method: "POST",
+                body: formData,
+            });
 
-      const data = await response.json();
-      if (response.ok) {
-        setPrediction(data.prediction);
-        setConfidence((data.confidence * 100).toFixed(2) + "%");
-      } else {
-        alert(data.error);
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      alert("Failed to get prediction");
-    }
-  };
+            const data = await response.json();
+            setPrediction(data.prediction);
+        } catch (error) {
+            console.error("Error:", error);
+            alert("Failed to get prediction.");
+        }
+    };
 
-  return (
-    <div className="text-center p-6">
-      <h1 className="text-2xl font-bold mb-4">AI Cancer Detection</h1>
-      <input type="file" onChange={handleFileChange} className="mb-4" />
-      <button onClick={handleUpload} className="bg-blue-500 text-white px-4 py-2 rounded">
-        Upload & Predict
-      </button>
-      {prediction && (
-        <div className="mt-4">
-          <h2 className="text-xl">Prediction: {prediction}</h2>
-          <p>Confidence: {confidence}</p>
+    return (
+        <div style={{ textAlign: "center", padding: "20px" }}>
+            <h2>AI Cancer Detection</h2>
+            <input type="file" onChange={handleFileChange} />
+            <br />
+            {preview && (
+                <img
+                    src={preview}
+                    alt="Preview"
+                    style={{ width: "300px", marginTop: "20px" }}
+                />
+            )}
+            <br />
+            <button onClick={handleUpload} style={{ marginTop: "10px" }}>
+                Predict
+            </button>
+            <p>{prediction && `🩺 Prediction: ${prediction}`}</p>
         </div>
-      )}
-    </div>
-  );
+    );
 };
 
-export default AI;
-  
+export default Ai;

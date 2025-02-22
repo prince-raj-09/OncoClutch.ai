@@ -1,38 +1,60 @@
+import os
 import torch
-import torchvision.models as models
 import torch.nn as nn
 import torchvision.transforms as transforms
 from PIL import Image
-import os
-import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from timm import create_model
+from flask import Flask, request, jsonify
+from werkzeug.utils import secure_filename
 
-# Load ResNet-101 model
-model = models.resnet101(weights=models.ResNet101_Weights.DEFAULT)
+app = Flask(__name__)
+UPLOAD_FOLDER = "uploads"
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-# Modify final layer to match our trained model
-num_ftrs = model.fc.in_features
-model.fc = nn.Sequential(
-    nn.Linear(num_ftrs, 256),
-    nn.ReLU(),
-    nn.Dropout(0.5),
-    nn.Linear(256, 2)  # 2 output classes: Cancer (1), No Cancer (0)
-)
+# Define the model loading function
+def load_model():
+    model = create_model('tf_efficientnet_b4', pretrained=False)
+    num_features = model.classifier.in_features
+    model.classifier = nn.Linear(num_features, 3)  # 3 classes: benign, malignant, normal
+    model.load_state_dict(torch.load("final_breast_cancer_model.pth", map_location=torch.device('cpu')))
+    model.eval()
+    return model
 
-# Move model to GPU for faster processing
-model = model.cuda()
+model = load_model()
 
-# Load trained weights
-model.load_state_dict(torch.load("backend\final_breast_cancer_model.pth"))
-model.eval()  # Set model to evaluation mode
+# Define image transformations
+def transform_image(image_path):
+    transform = transforms.Compose([
+        transforms.Resize((380, 380)),
+        transforms.ToTensor(),
+        transforms.Normalize([0.5], [0.5])
+    ])
+    image = Image.open(image_path).convert("RGB")
+    return transform(image).unsqueeze(0)
 
-print("✅ AI Model Loaded Successfully.")
+# Prediction function
+def predict(image_path):
+    class_names = ['Benign', 'Malignant', 'Normal']
+    image_tensor = transform_image(image_path)
+    with torch.no_grad():
+        output = model(image_tensor)
+        _, predicted = torch.max(output, 1)
+    return class_names[predicted.item()]
 
-# Define preprocessing (same as training)
-transform = transforms.Compose([
-    transforms.Resize((224, 224)),  # Resize for ResNet input
-    transforms.ToTensor(),  # Convert to tensor
-])
+# API route to handle image upload
+@app.route("/predict", methods=["POST"])
+def upload_file():
+    if "file" not in request.files:
+        return jsonify({"error": "No file part"})
+    file = request.files["file"]
+    if file.filename == "":
+        return jsonify({"error": "No selected file"})
+    filename = secure_filename(file.filename)
+    file_path = os.path.join(UPLOAD_FOLDER, filename)
+    file.save(file_path)
+    result = predict(file_path)
+    os.remove(file_path)  # Clean up after prediction
+    return jsonify({"prediction": result})
 
-print("✅ Image preprocessing setup is complete.")
+if __name__ == "__main__":
+    app.run(debug=True)
