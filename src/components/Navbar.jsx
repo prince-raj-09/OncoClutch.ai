@@ -13,13 +13,7 @@ const Navbar = () => {
           Home
         </Link>
         <Link to="/ai" className="text-gray-300 hover:text-blue-400 transition">
-          AI
-        </Link>
-        <Link
-          to="/about"
-          className="text-gray-300 hover:text-blue-400 transition"
-        >
-          About
+          Lung
         </Link>
         <Link
           to="/synapse"
@@ -32,6 +26,18 @@ const Navbar = () => {
           className="text-gray-300 hover:text-blue-400 transition"
         >
           Breast
+        </Link>
+        <Link
+          to="/skin"
+          className="text-gray-300 hover:text-blue-400 transition"
+        >
+          Skin
+        </Link>
+        <Link
+          to="/about"
+          className="text-gray-300 hover:text-blue-400 transition"
+        >
+          About
         </Link>
       </div>
     </nav>

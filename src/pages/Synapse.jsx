@@ -28,9 +28,9 @@ const Synapse = () => {
       {/* PDF Links Section */}
       <div className="relative z-10 text-center mt-10">
         {[
-          { name: "Bronchogenic Carcinoma", file: ".\src\assets\images\LUNG.pdf" },
-          { name: "Cutaneous Carcinoma", file: ".\src\assets\images\SKIN.pdf" },
-          { name: "Mammary Carcinoma", file: ".\src\assets\images\BREAST.pdf" }
+          { name: "Bronchogenic Carcinoma", file: "LUNG" },
+          { name: "Cutaneous Carcinoma", file: "SKIN" },
+          { name: "Mammary Carcinoma", file: "BREAST.pdf" }
         ].map(({ name, file }) => (
           <a key={file} href={file} target="_blank" rel="noopener noreferrer" className="inline-block m-3 px-6 py-3 border border-gray-700 bg-gray-800 text-gray-300 rounded-lg transition-transform duration-300 hover:scale-105 hover:shadow-lg hover:shadow-pink-400">
             {name}
