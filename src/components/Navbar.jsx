@@ -22,18 +22,6 @@ const Navbar = () => {
           Synapse
         </Link>
         <Link
-          to="/breast"
-          className="text-gray-300 hover:text-blue-400 transition"
-        >
-          Breast
-        </Link>
-        <Link
-          to="/skin"
-          className="text-gray-300 hover:text-blue-400 transition"
-        >
-          Skin
-        </Link>
-        <Link
           to="/about"
           className="text-gray-300 hover:text-blue-400 transition"
         >

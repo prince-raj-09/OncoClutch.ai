@@ -6,8 +6,6 @@
   import About from "./pages/About";
   import Footer from "./components/Footer";
   import Synapse from "./pages/Synapse";
-  import BreastCancerDetection from "./pages/Breast"; // Import the BreastCancerDetection component
-  import SkinCancerDetection from "./pages/skin";
   
 
   const App = () => {
@@ -22,8 +20,6 @@
           <Route path="/ai" element={<AI />} />
           <Route path="/about" element={<About />} />
           <Route path="/synapse" element={<Synapse />} /> 
-          <Route path="/breast" element={<BreastCancerDetection />} />
-          <Route path="/skin" element={<SkinCancerDetection />} />
         </Routes>
 
         {/* Footer */}
